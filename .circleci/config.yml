@@ -23,6 +23,11 @@ jobs:
     
     steps:
       - checkout
+      
+      - run:
+          name: Move to correct folder
+          command: |
+            cd application
 
       # Download and cache dependencies
       - restore_cache:
