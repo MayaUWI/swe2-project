@@ -14,7 +14,7 @@ public class SemesterGPACalculationTest {
 
     private swe2slayers.gpacalculationapplication.models.User user;
     Year originalYear;
-    Semester semester=new Semester("temp",null,null);
+    Semester semester;
     Course course1, course2, course3, course4;
     private static boolean alreadySetUp = false;
 
@@ -78,6 +78,7 @@ public class SemesterGPACalculationTest {
         // ASSERTION 1
 
         // Semester has four courses, each with a grade of 75 which should amount to GPA of 3.7
+        semester = new Semester("Semester 1", originalYear.getYearId(), originalYear.getUserId());
         double temp = swe2slayers.gpacalculationapplication.controllers.SemesterController.calculateGpaForSemester(semester);
 
         java.math.BigDecimal bd = new java.math.BigDecimal(Double.toString(temp));
