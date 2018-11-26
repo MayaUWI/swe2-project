@@ -108,28 +108,25 @@ Time Time1= new Time(9,30);
         FirebaseDatabaseHelper.load(user,null);
 
         assertFalse(FirebaseDatabaseHelper.getGradingSchema()==null);
-        Year y1= new Year("year 1",user.getUserId(),dateS,dateE);
-        y1.setYearId("232weER2SF3kn12");
-        UserController.addYearForUser(user,y1,null);
+        yr.setYearId("232weER2SF3kn12");
+        UserController.addYearForUser(user,yr,null);
 
-        Semester s1=new Semester("Semester 1",y1.getYearId(),user.getUserId(),dateS,dateE);
-        s1.setSemesterId("d324nk34iN3DNSD");
-        UserController.addSemesterForUser(user,s1,null);
+        s.setSemesterId("d324nk34iN3DNSD");
+        UserController.addSemesterForUser(user,s,null);
 
-        Course c1 =new Course("Math 2250","Industrial Statistics",s1.getSemesterId(),user.getUserId(),3,2,85);
+        Course c1 =new Course("Math 2250","Industrial Statistics",s.getSemesterId(),user.getUserId(),3,2,85);
         c1.setCourseId("128102jkosj");
-        Course c2 =new Course("Foun 1100","Caribbean Civ",s1.getSemesterId(),user.getUserId(),3,1,50);
+        Course c2 =new Course("Foun 1100","Caribbean Civ",s.getSemesterId(),user.getUserId(),3,1,50);
         c2.setCourseId("s239123sds");
 
         UserController.addCourseForUser(user,c1,null);
         UserController.addCourseForUser(user,c2,null);
 
-        UserController.updateSemesterForUser(user,s1,null);
-        UserController.updateYearForUser(user,y1,null);
-        User u=user;
-        System.out.println(UserController.calculateDegreeGPA(u));
-        assertFalse(UserController.calculateDegreeGPA(u)==0.0);
-        assertFalse(UserController.calculateDegreeGPA(u)>4.3);
+        UserController.updateSemesterForUser(user,s,null);
+        UserController.updateYearForUser(user,yr,null);
+        System.out.println(UserController.calculateDegreeGPA(user));
+        assertFalse(UserController.calculateDegreeGPA(user)==0.0);
+        assertFalse(UserController.calculateDegreeGPA(user)>4.3);
 
     }
 
@@ -140,27 +137,22 @@ Time Time1= new Time(9,30);
 
 
         assertFalse(FirebaseDatabaseHelper.getGradingSchema()==null);
-        Year y1= new Year("year 1",user.getUserId(),dateS,dateE);
-        y1.setYearId("232weER2SF3kn12");
-        UserController.addYearForUser(user,y1,null);
-
-        Semester s1=new Semester("Semester 1",y1.getYearId(),user.getUserId(),dateS,dateE);
-        s1.setSemesterId("d324nk34iN3DNSD");
-        UserController.addSemesterForUser(user,s1,null);
-
-        Course c1 =new Course("Math 2250","Industrial Statistics",s1.getSemesterId(),user.getUserId(),3,2,85);
-        Course c2 =new Course("Comp 1601","Computer Concepts",s1.getSemesterId(),user.getUserId(),3,1,53);
+        yr.setYearId("9LSJ2xx13FXsxc");
+        UserController.addYearForUser(user,yr,null);
+        s.setSemesterId("sWjiu4E5XCZ93s");
+        UserController.addSemesterForUser(user,s,null);
+        Course c1 =new Course("Math 2250","Industrial Statistics",s.getSemesterId(),user.getUserId(),3,2,85);
+        Course c2 =new Course("Comp 1601","Computer Concepts",s.getSemesterId(),user.getUserId(),3,1,53);
         c1.setCourseId("sdn12912uebwks");
         c2.setCourseId("qejnk2398293sd");
         UserController.addCourseForUser(user,c1,null);
         UserController.addCourseForUser(user,c2,null);
 
-        UserController.updateSemesterForUser(user,s1,null);
-        UserController.updateYearForUser(user,y1,null);
-        User u=user;
-        System.out.println(UserController.calculateCumulativeGPA(u));
-        assertFalse(UserController.calculateCumulativeGPA(u)==0.0);
-        assertFalse(UserController.calculateCumulativeGPA(u)>4.3);
+        UserController.updateSemesterForUser(user,s,null);
+        UserController.updateYearForUser(user,yr,null);
+        System.out.println(UserController.calculateCumulativeGPA(user));
+        assertFalse(UserController.calculateCumulativeGPA(user)==0.0);
+        assertFalse(UserController.calculateCumulativeGPA(user)>4.3);
 
     }
 
