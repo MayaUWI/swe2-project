@@ -29,18 +29,18 @@ public class UserControllerTest {
     public void before() {
         FirebaseDatabaseHelper.enableTestingMode();
         FirebaseDatabaseHelper.load(user, null);
-        Date dateS = new Date(19, 12, 2018);
         Date dateE = new Date(19, 12, 2019);
 
         user = new User("S9oThHsvlAX8OVSBA0Xp09mNKMr2", "test@test.com", "SWETest", "Cases", 816000111, "Computer Science", 3.8, 3.8);
 
-        yr = new Year("Year 1", user.getUserId(), dateS, dateE);
+        yr = new Year("Year 1", user.getUserId());
         yr.setYearId("123456");
         UserController.addYearForUser(user,yr,null);
 
-        s = new Semester("Semester 1", yr.getYearId(), user.getUserId(), dateS, dateE);
+        s = new Semester("Semester 1", yr.getYearId(), user.getUserId());
         s.setSemesterId("d324nk34iN3DNSD");
         UserController.addSemesterForUser(user,s,null);
+
 
         Course c1 =new Course("Math 2250","Industrial Statistics",s.getSemesterId(),user.getUserId(),3,2,85);
         c1.setCourseId("128102jkosj");
