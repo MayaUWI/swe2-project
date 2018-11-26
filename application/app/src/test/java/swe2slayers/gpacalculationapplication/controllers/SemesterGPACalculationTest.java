@@ -159,7 +159,6 @@ public class SemesterGPACalculationTest {
     @Test
     public void getYearForSemester() {
         Year tempYear = SemesterController.getYearForSemester(semester);
-
         assertTrue(originalYear.getYearId() == tempYear.getYearId());
     }
 
