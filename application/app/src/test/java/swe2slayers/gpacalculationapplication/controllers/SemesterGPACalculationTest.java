@@ -65,8 +65,8 @@ public class SemesterGPACalculationTest {
         courses.add(course2);
         courses.add(course3);
         courses.add(course4);
-
-        java.util.ArrayList<Course> courseComparison = SemesterController.getCoursesForSemester(semester);
+        Semester s = semester;
+        java.util.ArrayList<Course> courseComparison = SemesterController.getCoursesForSemester(s);
         for (int i = 0; i < 4; i++) {
             assertTrue(courses.get(i).getCourseId() == courseComparison.get(i).getCourseId());
         }
@@ -79,6 +79,10 @@ public class SemesterGPACalculationTest {
 
         // Semester has four courses, each with a grade of 75 which should amount to GPA of 3.7
         Semester s = semester;
+        Course c1=course1;
+        Course c2=course2;
+        Course c3=course3;
+        Course c4=course4;
 
         double temp = swe2slayers.gpacalculationapplication.controllers.SemesterController.calculateGpaForSemester(s);
 
