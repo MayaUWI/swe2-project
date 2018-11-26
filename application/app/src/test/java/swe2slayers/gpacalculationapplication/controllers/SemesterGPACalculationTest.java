@@ -79,10 +79,6 @@ public class SemesterGPACalculationTest {
 
         // Semester has four courses, each with a grade of 75 which should amount to GPA of 3.7
         Semester s = semester;
-        Course c1=course1;
-        Course c2=course2;
-        Course c3=course3;
-        Course c4=course4;
 
         double temp = swe2slayers.gpacalculationapplication.controllers.SemesterController.calculateGpaForSemester(s);
 
