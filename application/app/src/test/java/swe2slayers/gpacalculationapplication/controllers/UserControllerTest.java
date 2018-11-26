@@ -84,6 +84,7 @@ Time Time1= new Time(9,30);
         assertFalse(a.getWeight()!=15);
         assertFalse(a.getTotal()!=100);
         assertFalse(a.getUserId()!=user.getUserId());
+
     }
 
     @Test
@@ -106,29 +107,29 @@ Time Time1= new Time(9,30);
         FirebaseDatabaseHelper.enableTestingMode();
         FirebaseDatabaseHelper.load(user,null);
 
-
         assertFalse(FirebaseDatabaseHelper.getGradingSchema()==null);
-        User u1=new User("3eiidfh98U3HFI2938uihw98H","test@test.com","John","Bonne");
-        Year y1= new Year("year 1",u1.getUserId(),dateS,dateE);
+        Year y1= new Year("year 1",user.getUserId(),dateS,dateE);
         y1.setYearId("232weER2SF3kn12");
         UserController.addYearForUser(user,y1,null);
 
-        Semester s1=new Semester("Semester 1",y1.getYearId(),u1.getUserId(),dateS,dateE);
+        Semester s1=new Semester("Semester 1",y1.getYearId(),user.getUserId(),dateS,dateE);
         s1.setSemesterId("d324nk34iN3DNSD");
-        UserController.addSemesterForUser(u1,s1,null);
+        UserController.addSemesterForUser(user,s1,null);
 
-        Course c1 =new Course("Math 2250","Industrial Statistics",s1.getSemesterId(),u1.getUserId(),3,2,85);
-        Course c2 =new Course("Foun 1100","Caribbean Civ",s1.getSemesterId(),u1.getUserId(),3,1,50);
+        Course c1 =new Course("Math 2250","Industrial Statistics",s1.getSemesterId(),user.getUserId(),3,2,85);
+        c1.setCourseId("128102jkosj");
+        Course c2 =new Course("Foun 1100","Caribbean Civ",s1.getSemesterId(),user.getUserId(),3,1,50);
+        c2.setCourseId("s239123sds");
 
-        UserController.addCourseForUser(u1,c1,null);
-        UserController.addCourseForUser(u1,c2,null);
+        UserController.addCourseForUser(user,c1,null);
+        UserController.addCourseForUser(user,c2,null);
 
         UserController.updateSemesterForUser(user,s1,null);
         UserController.updateYearForUser(user,y1,null);
-
-        System.out.println(UserController.calculateDegreeGPA(u1));
-        assertFalse(UserController.calculateDegreeGPA(u1)==0.0);
-        assertFalse(UserController.calculateDegreeGPA(u1)>4.3);
+        User u=user;
+        System.out.println(UserController.calculateDegreeGPA(u));
+        assertFalse(UserController.calculateDegreeGPA(u)==0.0);
+        assertFalse(UserController.calculateDegreeGPA(u)>4.3);
 
     }
 
@@ -139,24 +140,27 @@ Time Time1= new Time(9,30);
 
 
         assertFalse(FirebaseDatabaseHelper.getGradingSchema()==null);
-        User u1=new User("3eiidfh98U3HFI2938uihw98H","test@test.com","John","Bonne");
-        Year y1= new Year("year 1",u1.getUserId(),dateS,dateE);
+        Year y1= new Year("year 1",user.getUserId(),dateS,dateE);
         y1.setYearId("232weER2SF3kn12");
         UserController.addYearForUser(user,y1,null);
 
-        Semester s1=new Semester("Semester 1",y1.getYearId(),u1.getUserId(),dateS,dateE);
+        Semester s1=new Semester("Semester 1",y1.getYearId(),user.getUserId(),dateS,dateE);
         s1.setSemesterId("d324nk34iN3DNSD");
-        UserController.addSemesterForUser(u1,s1,null);
+        UserController.addSemesterForUser(user,s1,null);
 
-        Course c1 =new Course("Math 2250","Industrial Statistics",s1.getSemesterId(),u1.getUserId(),3,2,85);
-        UserController.addCourseForUser(u1,c1,null);
+        Course c1 =new Course("Math 2250","Industrial Statistics",s1.getSemesterId(),user.getUserId(),3,2,85);
+        Course c2 =new Course("Comp 1601","Computer Concepts",s1.getSemesterId(),user.getUserId(),3,1,53);
+        c1.setCourseId("sdn12912uebwks");
+        c2.setCourseId("qejnk2398293sd");
+        UserController.addCourseForUser(user,c1,null);
+        UserController.addCourseForUser(user,c2,null);
 
         UserController.updateSemesterForUser(user,s1,null);
         UserController.updateYearForUser(user,y1,null);
-
-        System.out.println(UserController.calculateCumulativeGPA(u1));
-        assertFalse(UserController.calculateCumulativeGPA(u1)==0.0);
-        assertFalse(UserController.calculateCumulativeGPA(u1)>4.3);
+        User u=user;
+        System.out.println(UserController.calculateCumulativeGPA(u));
+        assertFalse(UserController.calculateCumulativeGPA(u)==0.0);
+        assertFalse(UserController.calculateCumulativeGPA(u)>4.3);
 
     }
 
