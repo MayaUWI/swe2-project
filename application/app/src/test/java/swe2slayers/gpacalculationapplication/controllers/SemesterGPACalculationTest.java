@@ -14,7 +14,7 @@ public class SemesterGPACalculationTest {
 
     private swe2slayers.gpacalculationapplication.models.User user;
     Year originalYear;
-    Semester semester;
+    Semester semester=new Semester("temp",null,null);
     Course course1, course2, course3, course4;
     private static boolean alreadySetUp = false;
 
