@@ -56,14 +56,15 @@ Time Time1= new Time(9,30);
     @Test
     public void updateCourseForUser() {
         FirebaseDatabaseHelper.enableTestingMode();
+        User use=user;
         Course c= new Course("Comp 3613","Software Engineering 2",s.getSemesterId(),user.getUserId(),3,3,85);
-        c.setUserId(user.getUserId());
+        c.setCourseId("1weqweqwe");
         UserController.addCourseForUser(user,c,null);
         c.setLevel(2);
         c.setCredits(1);
         c.setCode("Comp3603");
         c.setName("Human and Computer Interaction");
-        UserController.updateCourseForUser(user,c,null);
+        UserController.updateCourseForUser(use,c,null);
         assertFalse(c.getLevel()!=2);
         assertFalse(c.getCredits()!=1);
         assertFalse(c.getCode()!="Comp3603");

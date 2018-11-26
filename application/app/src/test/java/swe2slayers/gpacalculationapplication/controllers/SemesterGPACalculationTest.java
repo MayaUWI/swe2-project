@@ -78,13 +78,14 @@ public class SemesterGPACalculationTest {
         // ASSERTION 1
 
         // Semester has four courses, each with a grade of 75 which should amount to GPA of 3.7
-        semester = new Semester("Semester 1", originalYear.getYearId(), originalYear.getUserId());
-        double temp = swe2slayers.gpacalculationapplication.controllers.SemesterController.calculateGpaForSemester(semester);
+        Semester s = semester;
+
+        double temp = swe2slayers.gpacalculationapplication.controllers.SemesterController.calculateGpaForSemester(s);
 
         java.math.BigDecimal bd = new java.math.BigDecimal(Double.toString(temp));
         bd = bd.setScale(1, java.math.RoundingMode.HALF_UP);
         temp = bd.doubleValue();
-
+        System.out.println(temp);
         // Assert that the GPA is what it should be
         assertTrue(3.7 == temp);
 
