@@ -59,7 +59,7 @@ Time Time1= new Time(9,30);
         User use=user;
         Course c= new Course("Comp 3613","Software Engineering 2",s.getSemesterId(),user.getUserId(),3,3,85);
         c.setCourseId("1weqweqwe");
-        UserController.addCourseForUser(user,c,null);
+        UserController.addCourseForUser(use,c,null);
         c.setLevel(2);
         c.setCredits(1);
         c.setCode("Comp3603");
