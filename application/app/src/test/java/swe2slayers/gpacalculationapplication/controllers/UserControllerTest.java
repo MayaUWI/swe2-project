@@ -1,5 +1,7 @@
 package swe2slayers.gpacalculationapplication.controllers;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
 import swe2slayers.gpacalculationapplication.models.Assignment;
@@ -12,59 +14,87 @@ import swe2slayers.gpacalculationapplication.utils.Date;
 import swe2slayers.gpacalculationapplication.utils.FirebaseDatabaseHelper;
 import swe2slayers.gpacalculationapplication.utils.Time;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static swe2slayers.gpacalculationapplication.controllers.UserController.getYearsForUser;
 
 public class UserControllerTest {
-Date dateS= new Date(19,12,2018);
-Date dateE= new Date(19,12,2019);
-Time Time1= new Time(9,30);
-    User user= new User("S9oThHsvlAX8OVSBA0Xp09mNKMr2","test@test.com","SWETest","Cases",816000111,"Computer Science",3.8,3.8);
-    Year yr = new Year("Year 1",user.getUserId(),dateS,dateE);
-    Semester s= new Semester("Semester 1",yr.getYearId(),user.getUserId(),dateS,dateE);
-    Course c= new Course("Comp 3613","Software Engineering 2",s.getSemesterId(),user.getUserId(),3,3,85);
-    Assignment a =new Assignment("1289","Assignment1",dateE,100,20,100);
-    Exam e= new Exam("1293","CW Exam 1",dateE,50,60,84);
-
-    @Test
-    public void updateYearForUser() {
+    User user;
+    Year yr;
+    Semester s;
+    Course c1,c2;
+    Assignment a;
+    Exam e;
+    @Before
+    public void before() {
         FirebaseDatabaseHelper.enableTestingMode();
-        UserController.addYearForUser(user,yr,null);
-        yr.setYearId("123456");
-        yr.setUserId("S9oThHsvlAX8OVSBA0Xp09mNKMr1");
-        UserController.updateYearForUser(user,yr,null);
-        assertFalse(yr.getUserId()!="S9oThHsvlAX8OVSBA0Xp09mNKMr1");
-        assertFalse(yr.getYearId()!="123456");
+        FirebaseDatabaseHelper.load(user, null);
+        Date dateS = new Date(19, 12, 2018);
+        Date dateE = new Date(19, 12, 2019);
 
+        user = new User("S9oThHsvlAX8OVSBA0Xp09mNKMr2", "test@test.com", "SWETest", "Cases", 816000111, "Computer Science", 3.8, 3.8);
+
+        yr = new Year("Year 1", user.getUserId(), dateS, dateE);
+        yr.setYearId("123456");
+        UserController.addYearForUser(user,yr,null);
+
+        s = new Semester("Semester 1", yr.getYearId(), user.getUserId(), dateS, dateE);
+        s.setSemesterId("d324nk34iN3DNSD");
+        UserController.addSemesterForUser(user,s,null);
+
+        Course c1 =new Course("Math 2250","Industrial Statistics",s.getSemesterId(),user.getUserId(),3,2,85);
+        c1.setCourseId("128102jkosj");
+        Course c2 =new Course("Foun 1100","Caribbean Civ",s.getSemesterId(),user.getUserId(),3,1,50);
+        c2.setCourseId("s239123sds");
+        UserController.addCourseForUser(user,c1,null);
+        UserController.addCourseForUser(user,c2,null);
+
+        a = new Assignment("1289", "Assignment1", dateE, 100, 20, 100);
+        a.setUserId(user.getUserId());
+        UserController.addAssignmentForUser(user,a,null);
+
+        e = new Exam("1293", "CW Exam 1", dateE, 50, 60, 84);
+        e.setUserId(user.getUserId());
+        UserController.addExamForUser(user,e,null);
     }
 
     @Test
-    public void updateSemesterForUser() {
-        FirebaseDatabaseHelper.enableTestingMode();
-        UserController.addSemesterForUser(user,s,null);
-        assertFalse(s.getSemesterId()=="192934");
-        s.setTitle("Semester 3");
-        s.setSemesterId("192934");
+    public void updateYearForUser() {
+        assertFalse(yr.getUserId()!=user.getUserId());
+        assertFalse(yr.getYearId()!="123456");
+        yr.setYearId("56789");
+        yr.setTitle("Year 3");
+        UserController.updateYearForUser(user,yr,null);
+        assertEquals("Year ID: ",yr.getYearId(),"56789");
+        assertEquals("Year Title: ",yr.getTitle(),"Year 3");
+        }
 
-        UserController.updateSemesterForUser(user,s,null);
-        assertFalse(s.getSemesterId()!="192934");
-        assertFalse(s.getTitle()!="Semester 3");
+    @Test
+    public void updateSemesterForUser() {
+        assertFalse(s.getSemesterId()!="d324nk34iN3DNSD");
+        assertFalse(s.getTitle()!="Semester 1");
         assertFalse(s.getUserId()!=user.getUserId());
+        s.setSemesterId("298whe1282UJuw");
+        s.setTitle("Semester 2");
+        s.setYearId("56789");
+        UserController.updateSemesterForUser(user,s,null);
+        assertEquals("Semester ID: ",s.getSemesterId(),"298whe1282UJuw");
+        assertEquals("Semester Title: ",s.getTitle(),"Semester 2");
+        assertEquals("Year ID: ",s.getYearId(),"56789");
 
     }
 
     @Test
     public void updateCourseForUser() {
-        FirebaseDatabaseHelper.enableTestingMode();
-        User use=user;
         Course c= new Course("Comp 3613","Software Engineering 2",s.getSemesterId(),user.getUserId(),3,3,85);
         c.setCourseId("1weqweqwe");
-        UserController.addCourseForUser(use,c,null);
+        UserController.addCourseForUser(user,c,null);
         c.setLevel(2);
         c.setCredits(1);
+        c.setUserId(user.getUserId());
         c.setCode("Comp3603");
         c.setName("Human and Computer Interaction");
-        UserController.updateCourseForUser(use,c,null);
+        UserController.updateCourseForUser(user,c,null);
         assertFalse(c.getLevel()!=2);
         assertFalse(c.getCredits()!=1);
         assertFalse(c.getCode()!="Comp3603");
@@ -75,11 +105,13 @@ Time Time1= new Time(9,30);
 
     @Test
     public void updateAssignmentForUser() {
-        FirebaseDatabaseHelper.enableTestingMode();
-        UserController.addAssignmentForUser(user,a,null);
+        assertFalse(a.getWeight()!=100);
+        assertFalse(a.getTotal()!=100);
+        assertFalse(a.getMark()!=20);
         a.setWeight(15);
         a.setTotal(100);
         a.setUserId(user.getUserId());
+        a.setCourseId(c2.getCourseId());
         UserController.updateAssignmentForUser(user,a,null);
         assertFalse(a.getWeight()!=15);
         assertFalse(a.getTotal()!=100);
@@ -89,41 +121,23 @@ Time Time1= new Time(9,30);
 
     @Test
     public void updateExamForUser() {
-        FirebaseDatabaseHelper.enableTestingMode();
-        UserController.addExamForUser(user,e,null);
+        assertFalse(e.getWeight()!=50);
+        assertFalse(e.getTotal()!=84);
+        assertFalse(e.getMark()!=60);
         e.setDuration(60);
+        e.setCourseId(c1.getCourseId());
+        e.setUserId(user.getUserId());
         e.setRoom("FST CSL 2");
-        e.setTime(Time1);
         e.setNote("Ask Lecuturer about question 2 b");
         UserController.updateExamForUser(user,e,null);
         assertFalse(e.getRoom()!="FST CSL 2");
         assertFalse(e.getTitle()!="CW Exam 1");
-        assertFalse(e.getTime()!=Time1);
         assertFalse(e.getNote()==null);
     }
 
     @Test
     public void calculateDegreeGPA() {
-        FirebaseDatabaseHelper.enableTestingMode();
-        FirebaseDatabaseHelper.load(user,null);
-
         assertFalse(FirebaseDatabaseHelper.getGradingSchema()==null);
-        yr.setYearId("232weER2SF3kn12");
-        UserController.addYearForUser(user,yr,null);
-
-        s.setSemesterId("d324nk34iN3DNSD");
-        UserController.addSemesterForUser(user,s,null);
-
-        Course c1 =new Course("Math 2250","Industrial Statistics",s.getSemesterId(),user.getUserId(),3,2,85);
-        c1.setCourseId("128102jkosj");
-        Course c2 =new Course("Foun 1100","Caribbean Civ",s.getSemesterId(),user.getUserId(),3,1,50);
-        c2.setCourseId("s239123sds");
-
-        UserController.addCourseForUser(user,c1,null);
-        UserController.addCourseForUser(user,c2,null);
-
-        UserController.updateSemesterForUser(user,s,null);
-        UserController.updateYearForUser(user,yr,null);
         System.out.println(UserController.calculateDegreeGPA(user));
         assertFalse(UserController.calculateDegreeGPA(user)==0.0);
         assertFalse(UserController.calculateDegreeGPA(user)>4.3);
@@ -132,28 +146,17 @@ Time Time1= new Time(9,30);
 
     @Test
     public void calculateCumulativeGPA() {
-        FirebaseDatabaseHelper.enableTestingMode();
-        FirebaseDatabaseHelper.load(user,null);
-
-
         assertFalse(FirebaseDatabaseHelper.getGradingSchema()==null);
-        yr.setYearId("9LSJ2xx13FXsxc");
-        UserController.addYearForUser(user,yr,null);
-        s.setSemesterId("sWjiu4E5XCZ93s");
-        UserController.addSemesterForUser(user,s,null);
-        Course c1 =new Course("Math 2250","Industrial Statistics",s.getSemesterId(),user.getUserId(),3,2,85);
-        Course c2 =new Course("Comp 1601","Computer Concepts",s.getSemesterId(),user.getUserId(),3,1,53);
-        c1.setCourseId("sdn12912uebwks");
-        c2.setCourseId("qejnk2398293sd");
-        UserController.addCourseForUser(user,c1,null);
-        UserController.addCourseForUser(user,c2,null);
-
-        UserController.updateSemesterForUser(user,s,null);
-        UserController.updateYearForUser(user,yr,null);
         System.out.println(UserController.calculateCumulativeGPA(user));
         assertFalse(UserController.calculateCumulativeGPA(user)==0.0);
         assertFalse(UserController.calculateCumulativeGPA(user)>4.3);
 
+    }
+
+    @After
+    public void after() {
+        // Disable Testing Mode
+        swe2slayers.gpacalculationapplication.utils.FirebaseDatabaseHelper.disableTestingMode();
     }
 
 }
