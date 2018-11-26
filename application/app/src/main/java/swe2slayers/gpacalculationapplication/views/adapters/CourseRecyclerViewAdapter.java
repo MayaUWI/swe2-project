@@ -1,3 +1,18 @@
+/*
+ * Copyright (c) 2018. Software Engineering Slayers
+ *
+ * Azel Daniel (816002285)
+ * Amanda Seenath (816002935)
+ * Christopher Joseph (814000605)
+ * Michael Bristol (816003612)
+ * Maya Bannis (816000144)
+ *
+ * COMP 3613
+ * Software Engineering II
+ *
+ * GPA Calculator Project
+ */
+
 package swe2slayers.gpacalculationapplication.views.adapters;
 
 import android.support.annotation.NonNull;
@@ -5,6 +20,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.firebase.database.DataSnapshot;
@@ -43,10 +59,8 @@ public class CourseRecyclerViewAdapter extends RecyclerView.Adapter<CourseRecycl
     }
 
     @Override
-    public void onBindViewHolder(final CourseRecyclerViewAdapter.ViewHolder holder, final int position) {
+    public void onBindViewHolder(final CourseRecyclerViewAdapter.ViewHolder holder,int position) {
         holder.course = courses.get(position);
-
-
 
         holder.nameView.setText(holder.course.getCode());
 
@@ -108,11 +122,18 @@ public class CourseRecyclerViewAdapter extends RecyclerView.Adapter<CourseRecycl
             holder.codeView.setText("");
         }
 
+        if(CourseController.calculateTotalWeights(holder.course) == 100 || holder.course.getFinalGrade() != -1){
+            holder.currentView.setVisibility(View.GONE);
+        }else{
+            holder.currentView.setVisibility(View.VISIBLE);
+        }
+
+        final int finalPosition = position;
         holder.view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (null != mListener) {
-                    mListener.onListFragmentInteraction(courses.get(position));
+                    mListener.onListFragmentInteraction(courses.get(finalPosition));
                 }
             }
         });
@@ -125,6 +146,7 @@ public class CourseRecyclerViewAdapter extends RecyclerView.Adapter<CourseRecycl
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View view;
+        public final ImageView currentView;
         public final TextView gradeView;
         public final TextView codeView;
         public final TextView nameView;
@@ -142,6 +164,7 @@ public class CourseRecyclerViewAdapter extends RecyclerView.Adapter<CourseRecycl
             examsView = (TextView) view.findViewById(R.id.exams);
             assignmentsView = (TextView) view.findViewById(R.id.assignments);
             semesterView = (TextView) view.findViewById(R.id.semester);
+            currentView = (ImageView) view.findViewById(R.id.current);
         }
 
         @Override

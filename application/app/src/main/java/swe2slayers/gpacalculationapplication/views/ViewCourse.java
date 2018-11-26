@@ -1,10 +1,29 @@
+/*
+ * Copyright (c) 2018. Software Engineering Slayers
+ *
+ * Azel Daniel (816002285)
+ * Amanda Seenath (816002935)
+ * Christopher Joseph (814000605)
+ * Michael Bristol (816003612)
+ * Maya Bannis (816000144)
+ *
+ * COMP 3613
+ * Software Engineering II
+ *
+ * GPA Calculator Project
+ *
+ * This activity allows a user to view a course
+ */
+
 package swe2slayers.gpacalculationapplication.views;
 
 import android.content.Intent;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -22,6 +41,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -32,19 +52,21 @@ import java.util.List;
 
 import swe2slayers.gpacalculationapplication.R;
 import swe2slayers.gpacalculationapplication.controllers.CourseController;
+import swe2slayers.gpacalculationapplication.controllers.SemesterController;
 import swe2slayers.gpacalculationapplication.controllers.UserController;
 import swe2slayers.gpacalculationapplication.models.Assignment;
 import swe2slayers.gpacalculationapplication.models.Course;
 import swe2slayers.gpacalculationapplication.models.Exam;
 import swe2slayers.gpacalculationapplication.models.Semester;
 import swe2slayers.gpacalculationapplication.models.User;
+import swe2slayers.gpacalculationapplication.utils.Closable;
 import swe2slayers.gpacalculationapplication.utils.FirebaseDatabaseHelper;
 import swe2slayers.gpacalculationapplication.views.adapters.ViewPagerAdapter;
 import swe2slayers.gpacalculationapplication.views.fragments.AssignmentFragment;
 import swe2slayers.gpacalculationapplication.views.fragments.ExamFragment;
 
 public class ViewCourse extends AppCompatActivity implements ExamFragment.OnListFragmentInteractionListener,
-        AssignmentFragment.OnListFragmentInteractionListener, FirebaseDatabaseHelper.Closable {
+        AssignmentFragment.OnListFragmentInteractionListener, Closable {
 
     private static User user;
 
@@ -155,6 +177,26 @@ public class ViewCourse extends AppCompatActivity implements ExamFragment.OnList
 
         CourseController.attachCourseListener(course, listener);
 
+        ValueEventListener updateListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        update();
+                    }
+                }, 500);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        };
+
+        CourseController.attachAssignmentsListenerForCourse(course, updateListener);
+        CourseController.attachExamsListenerForCourse(course, updateListener);
+
         update();
     }
 
@@ -169,28 +211,50 @@ public class ViewCourse extends AppCompatActivity implements ExamFragment.OnList
         double average = CourseController.calculateAverage(course);
         if(average == -1){
             avg.setVisibility(View.GONE);
+            description.setVisibility(View.GONE);
             caption.setText("No graded exams or assignments");
         }else {
+            description.setVisibility(View.VISIBLE);
             avg.setVisibility(View.VISIBLE);
             caption.setText(String.format("%.2f", average) + "% Average");
         }
 
         double minimumGrade = CourseController.calculateMinimumGrade(course);
-        if(minimumGrade == -2){
+        if(course.getTargetGrade() == -1){
+            if(CourseController.calculateTotalWeights(course) != 0) {
+                description.setText("(" +
+                        String.format("%.2f", CourseController.calculatePercentageFinalGrade(course)) +
+                        "% of " + String.format("%.2f", CourseController.calculateTotalWeights(course)) +
+                        "% attained so far)");
+            }else{
+                description.setVisibility(View.GONE);
+            }
+        }else if(minimumGrade == -2){
             description.setText("Target grade was not achieved");
         }else if(minimumGrade == -1){
             description.setText("Target grade was achieved");
         }else{
             description.setText(String.format("%.2f", minimumGrade) + "% average needed to achieve target grade");
+            description.setText(description.getText() + "\n(" +
+                    String.format("%.2f", CourseController.calculatePercentageFinalGrade(course)) +
+                    "% of " + String.format("%.2f", CourseController.calculateTotalWeights(course)) +
+                    "% attained so far)");
         }
 
         viewPager.getAdapter().notifyDataSetChanged();
+
+        invalidateOptionsMenu();
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.view_model_menu, menu);
+        inflater.inflate(R.menu.view_model_menu_current, menu);
+        if(CourseController.calculateTotalWeights(course) == 100 || course.getFinalGrade() != -1){
+            menu.findItem(R.id.current).setEnabled(false);
+        }else{
+            menu.findItem(R.id.current).setEnabled(true);
+        }
         return true;
     }
 
@@ -199,6 +263,9 @@ public class ViewCourse extends AppCompatActivity implements ExamFragment.OnList
         switch (item.getItemId()) {
             case android.R.id.home:
                 this.finish();
+                return true;
+            case R.id.current:
+                Snackbar.make(findViewById(R.id.content), "This course's final grade will be automatically calculated.", Snackbar.LENGTH_SHORT).show();
                 return true;
             case R.id.edit:
                 Intent intent = new Intent(this, EditCourse.class);

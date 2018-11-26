@@ -1,5 +1,19 @@
-package swe2slayers.gpacalculationapplication.views.fragments;
+/*
+ * Copyright (c) 2018. Software Engineering Slayers
+ *
+ * Azel Daniel (816002285)
+ * Amanda Seenath (816002935)
+ * Christopher Joseph (814000605)
+ * Michael Bristol (816003612)
+ * Maya Bannis (816000144)
+ *
+ * COMP 3613
+ * Software Engineering II
+ *
+ * GPA Calculator Project
+ */
 
+package swe2slayers.gpacalculationapplication.views.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -31,11 +45,9 @@ import swe2slayers.gpacalculationapplication.models.Semester;
 import swe2slayers.gpacalculationapplication.models.User;
 import swe2slayers.gpacalculationapplication.models.Year;
 import swe2slayers.gpacalculationapplication.utils.FirebaseDatabaseHelper;
+import swe2slayers.gpacalculationapplication.utils.Sorter;
 import swe2slayers.gpacalculationapplication.views.adapters.SemesterRecyclerViewAdapter;
 
-/**
- * A simple {@link Fragment} subclass.
- */
 public class SemesterFragment extends Fragment {
 
     private OnListFragmentInteractionListener listener;
@@ -48,10 +60,6 @@ public class SemesterFragment extends Fragment {
     private View empty;
     private RecyclerView recyclerView;
 
-
-    /**
-     *  Required empty constructor
-     */
     public SemesterFragment() {
     }
 
@@ -80,32 +88,12 @@ public class SemesterFragment extends Fragment {
                     semesters.add(semester);
                 }
 
-                Collections.sort(semesters, new Comparator<Semester>() {
-                    @Override
-                    public int compare(Semester s1, Semester s2) {
-                        Year y1 = FirebaseDatabaseHelper.getYear(s1.getYearId());
-                        Year y2 = FirebaseDatabaseHelper.getYear(s2.getYearId());
-
-                        int c = s1.getYearId().compareTo(s2.getYearId());
-
-                        if(y1 != null && y2 != null){
-                            c = y1.getTitle().compareTo(y2.getTitle());
-                        }
-
-                        if(c == 0){
-                            c = s1.getTitle().compareTo(s2.getTitle());
-                        }
-
-                        return c;
-                    }
-                });
-
-
+                Sorter.sortSemesters(semesters);
 
                 if(semesters.isEmpty()){
                     empty.setVisibility(View.VISIBLE);
                 }else{
-                    empty.setVisibility(View.INVISIBLE);
+                    empty.setVisibility(View.GONE);
                 }
 
                 recyclerView.swapAdapter(new SemesterRecyclerViewAdapter(semesters, listener), true);
@@ -135,6 +123,9 @@ public class SemesterFragment extends Fragment {
         if(!semesters.isEmpty()) {
             SemesterRecyclerViewAdapter adapter = new SemesterRecyclerViewAdapter(semesters, listener);
             recyclerView.setAdapter(adapter);
+            empty.setVisibility(View.GONE);
+        }else{
+            empty.setVisibility(View.VISIBLE);
         }
 
         return view;

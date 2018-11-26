@@ -1,3 +1,18 @@
+/*
+ * Copyright (c) 2018. Software Engineering Slayers
+ *
+ * Azel Daniel (816002285)
+ * Amanda Seenath (816002935)
+ * Christopher Joseph (814000605)
+ * Michael Bristol (816003612)
+ * Maya Bannis (816000144)
+ *
+ * COMP 3613
+ * Software Engineering II
+ *
+ * GPA Calculator Project
+ */
+
 package swe2slayers.gpacalculationapplication.views.fragments;
 
 import android.content.Context;
@@ -20,6 +35,7 @@ import swe2slayers.gpacalculationapplication.R;
 import swe2slayers.gpacalculationapplication.controllers.UserController;
 import swe2slayers.gpacalculationapplication.models.User;
 import swe2slayers.gpacalculationapplication.models.Year;
+import swe2slayers.gpacalculationapplication.utils.Sorter;
 import swe2slayers.gpacalculationapplication.views.adapters.YearRecyclerViewAdapter;
 
 import java.util.ArrayList;
@@ -39,9 +55,6 @@ public class YearFragment extends Fragment {
 
     private List<Year> years;
 
-    /**
-     * Required empty constructor
-     */
     public YearFragment() {
     }
 
@@ -69,12 +82,7 @@ public class YearFragment extends Fragment {
                     years.add(year);
                 }
 
-                Collections.sort(years, new Comparator<Year>() {
-                    @Override
-                    public int compare(Year y1, Year y2) {
-                        return y1.getTitle().compareTo(y2.getTitle());
-                    }
-                });
+                Sorter.sortYears(years);
 
                 if(years.isEmpty()){
                     empty.setVisibility(View.VISIBLE);
@@ -107,6 +115,7 @@ public class YearFragment extends Fragment {
         if(!years.isEmpty()) {
             YearRecyclerViewAdapter adapter = new YearRecyclerViewAdapter(years, listener);
             recyclerView.setAdapter(adapter);
+            empty.setVisibility(View.GONE);
         }
         return view;
     }

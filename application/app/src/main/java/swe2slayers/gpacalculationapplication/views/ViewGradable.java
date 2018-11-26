@@ -1,3 +1,20 @@
+/*
+ * Copyright (c) 2018. Software Engineering Slayers
+ *
+ * Azel Daniel (816002285)
+ * Amanda Seenath (816002935)
+ * Christopher Joseph (814000605)
+ * Michael Bristol (816003612)
+ * Maya Bannis (816000144)
+ *
+ * COMP 3613
+ * Software Engineering II
+ *
+ * GPA Calculator Project
+ *
+ * This activity allows a user to view an exam or assignment
+ */
+
 package swe2slayers.gpacalculationapplication.views;
 
 import android.content.Intent;
@@ -5,6 +22,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -40,12 +58,13 @@ import swe2slayers.gpacalculationapplication.models.Exam;
 import swe2slayers.gpacalculationapplication.models.Gradable;
 import swe2slayers.gpacalculationapplication.models.Semester;
 import swe2slayers.gpacalculationapplication.models.User;
+import swe2slayers.gpacalculationapplication.utils.Closable;
 import swe2slayers.gpacalculationapplication.utils.FirebaseDatabaseHelper;
 import swe2slayers.gpacalculationapplication.views.adapters.ViewPagerAdapter;
 import swe2slayers.gpacalculationapplication.views.fragments.AssignmentFragment;
 import swe2slayers.gpacalculationapplication.views.fragments.ExamFragment;
 
-public class ViewGradable extends AppCompatActivity implements FirebaseDatabaseHelper.Closable {
+public class ViewGradable extends AppCompatActivity implements Closable {
 
     private User user;
 
@@ -138,6 +157,7 @@ public class ViewGradable extends AppCompatActivity implements FirebaseDatabaseH
             grade.setVisibility(View.GONE);
             caption.setText("Not Graded");
         }else {
+            grade.setVisibility(View.VISIBLE);
             caption.setText(String.format("%.2f", GradableController.calculatePercentageGrade(gradable)) + "% score");
         }
 
@@ -149,18 +169,26 @@ public class ViewGradable extends AppCompatActivity implements FirebaseDatabaseH
 
         if(gradable.getWeight() >= 0) {
             weight.setText(String.format("%.2f", gradable.getWeight()) + "%");
+        }else{
+            weight.setText("No weight");
         }
 
         if(gradable.getMark() >= 0) {
             mark.setText(String.format("%.2f", gradable.getMark()));
+        }else{
+            mark.setText("No mark");
         }
 
         if(gradable.getTotal() >= 0) {
             total.setText(String.format("%.2f", gradable.getTotal()));
+        }else{
+            total.setText("No total");
         }
 
         if(!gradable.getNote().equals("")) {
             notes.setText(gradable.getNote());
+        }else{
+            notes.setText("No notes");
         }
 
         if(exam != null){
@@ -177,7 +205,7 @@ public class ViewGradable extends AppCompatActivity implements FirebaseDatabaseH
             }
 
             if(exam.getTime() != null && exam.getTime().getHour() != -1) {
-                time.setText(exam.getTime().toString());
+                time.setText(exam.getTime().toStringFancy());
             }
         }
 
@@ -189,12 +217,29 @@ public class ViewGradable extends AppCompatActivity implements FirebaseDatabaseH
             course.setText("Unassigned");
         }
 
+        invalidateOptionsMenu();
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.view_model_menu, menu);
+        inflater.inflate(R.menu.view_model_menu_current, menu);
+
+        Gradable gradable;
+
+        if(exam != null){
+            gradable = exam;
+        }else{
+            gradable = assignment;
+        }
+
+        if (gradable.getDate() != null && gradable.getDate().getYear() != -1 &&
+                !gradable.getDate().daysUntil().contains("ago")) {
+            menu.findItem(R.id.current).setEnabled(true);
+        }else{
+            menu.findItem(R.id.current).setEnabled(false);
+        }
+
         return true;
     }
 
@@ -203,6 +248,13 @@ public class ViewGradable extends AppCompatActivity implements FirebaseDatabaseH
         switch (item.getItemId()) {
             case android.R.id.home:
                 this.finish();
+                return true;
+            case R.id.current:
+                if(exam != null) {
+                    Snackbar.make(findViewById(R.id.content), "This exam is due to be held soon", Snackbar.LENGTH_SHORT).show();
+                }else{
+                    Snackbar.make(findViewById(R.id.content), "This assignment is due soon", Snackbar.LENGTH_SHORT).show();
+                }
                 return true;
             case R.id.edit:
                 if(exam != null){

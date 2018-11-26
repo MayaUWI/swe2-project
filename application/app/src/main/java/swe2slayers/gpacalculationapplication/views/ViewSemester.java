@@ -1,7 +1,25 @@
+/*
+ * Copyright (c) 2018. Software Engineering Slayers
+ *
+ * Azel Daniel (816002285)
+ * Amanda Seenath (816002935)
+ * Christopher Joseph (814000605)
+ * Michael Bristol (816003612)
+ * Maya Bannis (816000144)
+ *
+ * COMP 3613
+ * Software Engineering II
+ *
+ * GPA Calculator Project
+ *
+ * This activity allows a user to view a semester
+ */
+
 package swe2slayers.gpacalculationapplication.views;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
@@ -38,13 +56,14 @@ import swe2slayers.gpacalculationapplication.models.Course;
 import swe2slayers.gpacalculationapplication.models.Semester;
 import swe2slayers.gpacalculationapplication.models.User;
 import swe2slayers.gpacalculationapplication.models.Year;
+import swe2slayers.gpacalculationapplication.utils.Closable;
 import swe2slayers.gpacalculationapplication.utils.FirebaseDatabaseHelper;
 import swe2slayers.gpacalculationapplication.views.adapters.ViewPagerAdapter;
 import swe2slayers.gpacalculationapplication.views.fragments.CourseFragment;
 import swe2slayers.gpacalculationapplication.views.fragments.SemesterFragment;
 
 public class ViewSemester extends AppCompatActivity
-        implements CourseFragment.OnListFragmentInteractionListener, FirebaseDatabaseHelper.Closable {
+        implements CourseFragment.OnListFragmentInteractionListener, Closable {
 
     private static User user;
 
@@ -139,6 +158,23 @@ public class ViewSemester extends AppCompatActivity
                 }
 
                 update();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+        SemesterController.attachCoursesListenerForSemester(semester, new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        update();
+                    }
+                }, 500);
             }
 
             @Override

@@ -1,8 +1,19 @@
-package swe2slayers.gpacalculationapplication.models;
-
 /*
- * Copyright (c) Software Engineering Slayers, 2018
+ * Copyright (c) 2018. Software Engineering Slayers
+ *
+ * Azel Daniel (816002285)
+ * Amanda Seenath (816002935)
+ * Christopher Joseph (814000605)
+ * Michael Bristol (816003612)
+ * Maya Bannis (816000144)
+ *
+ * COMP 3613
+ * Software Engineering II
+ *
+ * GPA Calculator Project
  */
+
+package swe2slayers.gpacalculationapplication.models;
 
 import java.io.Serializable;
 
@@ -26,9 +37,6 @@ public class User implements Serializable {
 
     private String gradingSchemaId;
 
-    /**
-     * Default Constructor for Firebase
-     */
     public User(){}
 
     /**
@@ -83,9 +91,9 @@ public class User implements Serializable {
      * @param degree The fullName of the degree the user is undertaking e.g. BSc. Biology
      * @param targetGPA The user's target GPA e.g. 3.6
      */
-    public User(String userId, String email, String firstName, String lastName, long studentId, String degree, double targetGPA) {
+    public User(String userId, String email, String firstName, String lastName, long studentId, String degree, double targetGPA, double targetCumulativeGPA) {
         this(userId, email, firstName, lastName, studentId, degree);
-        this.targetCumulativeGPA = targetGPA;
+        this.targetCumulativeGPA = targetCumulativeGPA;
         this.targetDegreeGPA = targetGPA;
     }
 

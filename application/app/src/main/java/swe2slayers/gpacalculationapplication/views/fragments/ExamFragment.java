@@ -1,5 +1,19 @@
-package swe2slayers.gpacalculationapplication.views.fragments;
+/*
+ * Copyright (c) 2018. Software Engineering Slayers
+ *
+ * Azel Daniel (816002285)
+ * Amanda Seenath (816002935)
+ * Christopher Joseph (814000605)
+ * Michael Bristol (816003612)
+ * Maya Bannis (816000144)
+ *
+ * COMP 3613
+ * Software Engineering II
+ *
+ * GPA Calculator Project
+ */
 
+package swe2slayers.gpacalculationapplication.views.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -26,6 +40,7 @@ import swe2slayers.gpacalculationapplication.models.Exam;
 import swe2slayers.gpacalculationapplication.models.Course;
 import swe2slayers.gpacalculationapplication.models.Gradable;
 import swe2slayers.gpacalculationapplication.models.User;
+import swe2slayers.gpacalculationapplication.utils.Sorter;
 import swe2slayers.gpacalculationapplication.views.adapters.CourseRecyclerViewAdapter;
 import swe2slayers.gpacalculationapplication.views.adapters.GradableRecyclerViewAdapter;
 
@@ -38,9 +53,6 @@ public class ExamFragment extends Fragment {
     private View empty;
     private RecyclerView recyclerView;
 
-    /**
-     *  Required empty constructor
-     */
     public ExamFragment() {}
 
     public static ExamFragment newInstance() {
@@ -74,6 +86,8 @@ public class ExamFragment extends Fragment {
                     empty.setVisibility(View.INVISIBLE);
                 }
 
+                Sorter.sortGradables(exams);
+
                 recyclerView.swapAdapter(new GradableRecyclerViewAdapter(exams, null, listener), true);
             }
 
@@ -102,6 +116,7 @@ public class ExamFragment extends Fragment {
         if(!exams.isEmpty()) {
             GradableRecyclerViewAdapter adapter = new GradableRecyclerViewAdapter(exams, null, listener);
             recyclerView.setAdapter(adapter);
+            empty.setVisibility(View.GONE);
         }
 
         return view;

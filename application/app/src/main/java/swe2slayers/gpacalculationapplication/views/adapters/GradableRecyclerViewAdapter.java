@@ -1,9 +1,25 @@
+/*
+ * Copyright (c) 2018. Software Engineering Slayers
+ *
+ * Azel Daniel (816002285)
+ * Amanda Seenath (816002935)
+ * Christopher Joseph (814000605)
+ * Michael Bristol (816003612)
+ * Maya Bannis (816000144)
+ *
+ * COMP 3613
+ * Software Engineering II
+ *
+ * GPA Calculator Project
+ */
+
 package swe2slayers.gpacalculationapplication.views.adapters;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.List;
@@ -39,7 +55,7 @@ public class GradableRecyclerViewAdapter extends RecyclerView.Adapter<GradableRe
     }
 
     @Override
-    public void onBindViewHolder(final GradableRecyclerViewAdapter.ViewHolder holder, final int position) {
+    public void onBindViewHolder(final GradableRecyclerViewAdapter.ViewHolder holder, int position) {
         holder.gradable = gradables.get(position);
 
         holder.gradeView.setText(GradableController.calculateLetterGrade(holder.gradable));
@@ -62,14 +78,18 @@ public class GradableRecyclerViewAdapter extends RecyclerView.Adapter<GradableRe
         }else {
             if (holder.gradable instanceof Exam) {
                 if (holder.gradable.getDate().daysUntil().contains("ago")) {
+                    holder.current.setVisibility(View.GONE);
                     holder.dueView.setText("Completed on " + holder.gradable.getDate().toStringFancy());
                 } else {
+                    holder.current.setVisibility(View.VISIBLE);
                     holder.dueView.setText("To be held " + holder.gradable.getDate().daysUntil());
                 }
             } else {
                 if (holder.gradable.getDate().daysUntil().contains("ago")) {
+                    holder.current.setVisibility(View.GONE);
                     holder.dueView.setText("Completed on " + holder.gradable.getDate().toStringFancy());
                 } else {
+                    holder.current.setVisibility(View.VISIBLE);
                     holder.dueView.setText("Due " + holder.gradable.getDate().daysUntil());
                 }
             }
@@ -78,6 +98,7 @@ public class GradableRecyclerViewAdapter extends RecyclerView.Adapter<GradableRe
         holder.view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                final int position=holder.getAdapterPosition();
                 if (aListener != null) {
                     aListener.onListFragmentInteraction((Assignment) gradables.get(position));
                 } else if (eListener != null) {
@@ -94,6 +115,7 @@ public class GradableRecyclerViewAdapter extends RecyclerView.Adapter<GradableRe
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View view;
+        public final ImageView current;
         public final TextView gradeView;
         public final TextView titleView;
         public final TextView courseView;
@@ -107,6 +129,7 @@ public class GradableRecyclerViewAdapter extends RecyclerView.Adapter<GradableRe
             titleView = (TextView) view.findViewById(R.id.title);
             courseView = (TextView) view.findViewById(R.id.course);
             dueView = (TextView) view.findViewById(R.id.due);
+            current = (ImageView) view.findViewById(R.id.current);
         }
 
         @Override
