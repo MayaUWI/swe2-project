@@ -105,6 +105,7 @@ public class UserControllerTest {
 
     @Test
     public void updateAssignmentForUser() {
+        User u =user;
         assertFalse(a.getWeight()!=100);
         assertFalse(a.getTotal()!=100);
         assertFalse(a.getMark()!=20);
@@ -112,7 +113,7 @@ public class UserControllerTest {
         a.setTotal(100);
         a.setUserId(user.getUserId());
         a.setCourseId(c2.getCourseId());
-        UserController.updateAssignmentForUser(user,a,null);
+        UserController.updateAssignmentForUser(u,a,null);
         assertFalse(a.getWeight()!=15);
         assertFalse(a.getTotal()!=100);
         assertFalse(a.getUserId()!=user.getUserId());
@@ -121,6 +122,7 @@ public class UserControllerTest {
 
     @Test
     public void updateExamForUser() {
+        User u =user;
         assertFalse(e.getWeight()!=50);
         assertFalse(e.getTotal()!=84);
         assertFalse(e.getMark()!=60);
@@ -129,7 +131,7 @@ public class UserControllerTest {
         e.setUserId(user.getUserId());
         e.setRoom("FST CSL 2");
         e.setNote("Ask Lecuturer about question 2 b");
-        UserController.updateExamForUser(user,e,null);
+        UserController.updateExamForUser(u,e,null);
         assertFalse(e.getRoom()!="FST CSL 2");
         assertFalse(e.getTitle()!="CW Exam 1");
         assertFalse(e.getNote()==null);
@@ -137,19 +139,22 @@ public class UserControllerTest {
 
     @Test
     public void calculateDegreeGPA() {
+        User u =user;
+
         assertFalse(FirebaseDatabaseHelper.getGradingSchema()==null);
-        System.out.println(UserController.calculateDegreeGPA(user));
-        assertFalse(UserController.calculateDegreeGPA(user)==0.0);
-        assertFalse(UserController.calculateDegreeGPA(user)>4.3);
+        System.out.println(UserController.calculateDegreeGPA(u));
+        assertFalse(UserController.calculateDegreeGPA(u)==0.0);
+        assertFalse(UserController.calculateDegreeGPA(u)>4.3);
 
     }
 
     @Test
     public void calculateCumulativeGPA() {
+        User u =user;
         assertFalse(FirebaseDatabaseHelper.getGradingSchema()==null);
-        System.out.println(UserController.calculateCumulativeGPA(user));
-        assertFalse(UserController.calculateCumulativeGPA(user)==0.0);
-        assertFalse(UserController.calculateCumulativeGPA(user)>4.3);
+        System.out.println(UserController.calculateCumulativeGPA(u));
+        assertFalse(UserController.calculateCumulativeGPA(u)==0.0);
+        assertFalse(UserController.calculateCumulativeGPA(u)>4.3);
 
     }
 
